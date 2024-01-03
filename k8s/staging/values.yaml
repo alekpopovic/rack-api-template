@@ -2,7 +2,7 @@ namespace: staging
 domain: rack-api-staging.codepop.services
 image:
   repository: popac/rack-api-staging
-  tag: ""
+  tag: "d865cd34031cffa614239c7e7701351b6c14b86d"
   restartPolicy: Always
   containerPort: 3000
 replicaCount: 2

@@ -1,0 +1,18 @@
+current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/racc-1.7.3/ext/racc/cparse
+/opt/hostedtoolcache/Ruby/3.3.0/x64/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/racc-1.7.3/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20240103-1764-atpulp sitelibdir\=./.gem.20240103-1764-atpulp clean
+
+current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/racc-1.7.3/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20240103-1764-atpulp sitelibdir\=./.gem.20240103-1764-atpulp
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/racc-1.7.3/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20240103-1764-atpulp sitelibdir\=./.gem.20240103-1764-atpulp install
+/usr/bin/install -c -m 0755 cparse.so ./.gem.20240103-1764-atpulp/racc
+
+current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/racc-1.7.3/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20240103-1764-atpulp sitelibdir\=./.gem.20240103-1764-atpulp clean
