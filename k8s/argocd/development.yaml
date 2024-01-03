@@ -3,6 +3,13 @@ kind: Application
 metadata:
   name: rack-api-development
   namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: argocd
+    notifications.argoproj.io/subscribe.on-deleted.slack: argocd
+    notifications.argoproj.io/subscribe.on-deployed.slack: argocd
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: argocd
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argocd
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: argocd
 spec:
   destination:
     namespace: development
@@ -10,7 +17,7 @@ spec:
   project: default
   source:
     path: "k8s/development"
-    repoURL: git@github.com:mozgovac/rack-api.git
+    repoURL: git@github.com:alekpopovic/rack-api.git
     targetRevision: development
   syncPolicy:
     automated: {}
