@@ -16,13 +16,13 @@ module HandleHttpErrors
     if errors.is_a?(Hash)
       errors.each do |key, value|
         obj << {
-          code: Helpers::Notification::ERROR_VALIDATION,
+          code: Helpers::HttpStatusCustomCode::VALIDATION_ERROR,
           message: "#{key.capitalize} #{value[0].humanize.downcase}",
         }
       end
     else
       obj << {
-        code: Helpers::Notification::ERROR_VALIDATION,
+        code: Helpers::HttpStatusCustomCode::VALIDATION_ERROR,
         message: errors,
       }
     end
@@ -33,7 +33,7 @@ module HandleHttpErrors
     render(
       json: {
         errors: [{
-          code: Helpers::Notification::ERROR_NOT_FOUND,
+          code: Helpers::HttpStatusCustomCode::NOT_FOUND_ERROR,
           message: error,
         }],
       },
@@ -45,7 +45,7 @@ module HandleHttpErrors
     render(
       json: {
         errors: [{
-          code: Helpers::Notification::ERROR_BAD_REQUEST,
+          code: Helpers::HttpStatusCustomCode::BAD_REQUEST_ERROR,
           message: error,
         }],
       },
