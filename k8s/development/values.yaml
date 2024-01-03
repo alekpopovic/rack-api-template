@@ -1,0 +1,10 @@
+namespace: development
+domain: rack-api-development.mozgovac.click
+image:
+  repository: popac/rack-api-development
+  tag: ""
+  restartPolicy: Always
+  containerPort: 3000
+replicaCount: 2
+clusterIssuerName: mozgovac
+ingressClassName: nginx

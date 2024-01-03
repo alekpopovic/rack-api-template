@@ -1,0 +1,16 @@
+**/.github
+**/.vscode
+**/k8s
+**/spec
+.dockerignore
+.editorconfig
+.env.example
+.gitignore
+.rspec
+.rubocop.yml
+.ruby-version
+docker-compose.yml
+Dockerfile
+Dockerfile.local
+Procfile.dev
+README.md

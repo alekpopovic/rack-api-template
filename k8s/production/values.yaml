@@ -1,0 +1,10 @@
+namespace: production
+domain: rack-api-production.mozgovac.click
+image:
+  repository: popac/rack-api-production
+  tag: ""
+  restartPolicy: Always
+  containerPort: 3000
+replicaCount: 3
+clusterIssuerName: mozgovac
+ingressClassName: nginx

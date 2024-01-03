@@ -1,0 +1,10 @@
+namespace: staging
+domain: rack-api-staging.mozgovac.click
+image:
+  repository: popac/rack-api-staging
+  tag: ""
+  restartPolicy: Always
+  containerPort: 3000
+replicaCount: 2
+clusterIssuerName: mozgovac
+ingressClassName: nginx

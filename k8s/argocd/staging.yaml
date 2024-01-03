@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rack-api-staging
+  namespace: argocd
+spec:
+  destination:
+    namespace: staging
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: "k8s/staging"
+    repoURL: git@github.com:mozgovac/rack-api.git
+    targetRevision: staging
+  syncPolicy:
+    automated: {}

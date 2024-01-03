@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    command:
+      [
+        "bundle",
+        "exec",
+        "rerun",
+        "--background",
+        "--pattern",
+        "**/*.{rb}",
+        "--dir",
+        "api,lib,spec",
+        "--",
+        "./bin/puma",
+        "-C",
+        "config/puma.rb",
+      ]
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - gems:/gems
+    env_file:
+      - .env
+
+volumes:
+  gems:
