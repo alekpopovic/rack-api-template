@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-module SignInAction
+module HealthAction
   include AbstractController::Rendering
 
-  def handle(**args)
-    validate(**args)
+  def handle
     render(json: {
-      email: args[:email],
-      password: args[:password],
+      app: ENV["APP_NAME"],
+      env: ENV["APP_ENV"],
     })
   end
 

@@ -56,5 +56,5 @@ spec:
           ports:
             - containerPort: {{ .Values.image.containerPort }}
       restartPolicy: {{ .Values.image.restartPolicy }}
-      imagePullSecrets:
-        - name: regcred
+      #imagePullSecrets:
+      #  - name: regcred
