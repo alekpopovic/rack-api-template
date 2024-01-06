@@ -3,4 +3,4 @@ name: rack-api-development
 description: A Helm chart for rack-api-development
 type: application
 version: 0.0.1
-appVersion: "17a55d4b01f6da98f08c7d36f790b035657e50a8"
+appVersion: "c228a7578da7bb51ca952b016b612366fecdc042"
