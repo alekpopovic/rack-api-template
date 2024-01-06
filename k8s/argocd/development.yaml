@@ -10,6 +10,9 @@ metadata:
     notifications.argoproj.io/subscribe.on-sync-failed.slack: argocd
     notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argocd
     notifications.argoproj.io/subscribe.on-health-degraded.slack: argocd
+    argocd-image-updater.argoproj.io/image-list: popac/rack-api-development
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
+    argocd-image-updater.argoproj.io/git-branch: development
 spec:
   destination:
     namespace: development
@@ -17,7 +20,7 @@ spec:
   project: default
   source:
     path: "k8s/development"
-    repoURL: git@github.com:alekpopovic/rack-api.git
+    repoURL: git@github.com:AlekPopovic/RackApi.git
     targetRevision: development
   syncPolicy:
     automated: {}

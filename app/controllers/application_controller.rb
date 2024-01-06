@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
+  include CheckAppApiKey
   include HandleHttpErrors
   include UnderscoreParams
 

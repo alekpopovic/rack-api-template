@@ -2,7 +2,7 @@ namespace: development
 domain: rack-api-development.codepop.services
 image:
   repository: popac/rack-api-development
-  tag: ""
+  tag: "a2ce93a55f82bb9b4b33f144d0e9b97e7405213f"
   restartPolicy: Always
   containerPort: 3000
 replicaCount: 2

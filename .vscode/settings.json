@@ -23,7 +23,7 @@
     "diagnostics": true,
     "codeActions": true
   },
-  "rubyLsp.rubyVersionManager": "asdf",
+  "rubyLsp.rubyVersionManager": "rbenv",
   "files.exclude": {
     "**/.git": true
   }
