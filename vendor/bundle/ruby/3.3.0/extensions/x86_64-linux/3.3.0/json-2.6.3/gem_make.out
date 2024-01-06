@@ -1,16 +1,16 @@
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
 /opt/hostedtoolcache/Ruby/3.3.0/x64/bin/ruby extconf.rb
 creating Makefile
 
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
-make DESTDIR\= sitearchdir\=./.gem.20240103-1764-zypcmb sitelibdir\=./.gem.20240103-1764-zypcmb clean
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240106-1751-9x96nn sitelibdir\=./.gem.20240106-1751-9x96nn clean
 
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
-make DESTDIR\= sitearchdir\=./.gem.20240103-1764-zypcmb sitelibdir\=./.gem.20240103-1764-zypcmb
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240106-1751-9x96nn sitelibdir\=./.gem.20240106-1751-9x96nn
 make: Nothing to be done for 'all'.
 
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
-make DESTDIR\= sitearchdir\=./.gem.20240103-1764-zypcmb sitelibdir\=./.gem.20240103-1764-zypcmb install
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240106-1751-9x96nn sitelibdir\=./.gem.20240106-1751-9x96nn install
 
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
-make DESTDIR\= sitearchdir\=./.gem.20240103-1764-zypcmb sitelibdir\=./.gem.20240103-1764-zypcmb clean
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/json-2.6.3/ext/json
+make DESTDIR\= sitearchdir\=./.gem.20240106-1751-9x96nn sitelibdir\=./.gem.20240106-1751-9x96nn clean

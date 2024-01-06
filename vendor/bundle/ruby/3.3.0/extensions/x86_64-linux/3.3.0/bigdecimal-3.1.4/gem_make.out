@@ -1,4 +1,4 @@
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
 /opt/hostedtoolcache/Ruby/3.3.0/x64/bin/ruby extconf.rb
 checking for __builtin_clz()... yes
 checking for __builtin_clzl()... yes
@@ -31,18 +31,18 @@ checking for rb_category_warn() in ruby.h... yes
 checking for RB_WARN_CATEGORY_DEPRECATED in ruby.h... yes
 creating Makefile
 
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
-make DESTDIR\= sitearchdir\=./.gem.20240103-1764-128dv0 sitelibdir\=./.gem.20240103-1764-128dv0 clean
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
+make DESTDIR\= sitearchdir\=./.gem.20240106-1751-5v5tqp sitelibdir\=./.gem.20240106-1751-5v5tqp clean
 
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
-make DESTDIR\= sitearchdir\=./.gem.20240103-1764-128dv0 sitelibdir\=./.gem.20240103-1764-128dv0
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
+make DESTDIR\= sitearchdir\=./.gem.20240106-1751-5v5tqp sitelibdir\=./.gem.20240106-1751-5v5tqp
 compiling bigdecimal.c
 compiling missing.c
 linking shared-object bigdecimal.so
 
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
-make DESTDIR\= sitearchdir\=./.gem.20240103-1764-128dv0 sitelibdir\=./.gem.20240103-1764-128dv0 install
-/usr/bin/install -c -m 0755 bigdecimal.so ./.gem.20240103-1764-128dv0
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
+make DESTDIR\= sitearchdir\=./.gem.20240106-1751-5v5tqp sitelibdir\=./.gem.20240106-1751-5v5tqp install
+/usr/bin/install -c -m 0755 bigdecimal.so ./.gem.20240106-1751-5v5tqp
 
-current directory: /home/runner/work/rack-api/rack-api/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
-make DESTDIR\= sitearchdir\=./.gem.20240103-1764-128dv0 sitelibdir\=./.gem.20240103-1764-128dv0 clean
+current directory: /home/runner/work/RackApi/RackApi/vendor/bundle/ruby/3.3.0/gems/bigdecimal-3.1.4/ext/bigdecimal
+make DESTDIR\= sitearchdir\=./.gem.20240106-1751-5v5tqp sitelibdir\=./.gem.20240106-1751-5v5tqp clean
