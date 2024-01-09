@@ -1,4 +1,4 @@
-# RackApi
+# rack-api
 
 ```bash
 - kubectl exec --stdin --tty POD -- /bin/bash
