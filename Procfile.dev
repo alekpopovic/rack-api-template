@@ -1,1 +1,2 @@
 api: bundle exec rerun --background --pattern **/*.{rb} --dir app,lib,spec -- ./bin/puma -C config/puma.rb
+sidekiq: bundle exec rerun --background --pattern **/*.{rb} --dir api,handlers,lib,spec -- ./bin/sidekiq -r ./config/sidekiq.rb -C config/sidekiq.yml

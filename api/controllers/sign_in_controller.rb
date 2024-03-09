@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SignInController < ApplicationController
-  include SignInAction
+  include SignInHandler
 
   def handler
     handle(

@@ -9,22 +9,11 @@
     120
   ],
   "editor.renderWhitespace": "all",
-  "editor.formatOnSave": true,
   "[ruby]": {
+    "editor.defaultFormatter": "rubocop.vscode-rubocop",
     "editor.formatOnSave": true
   },
-  "rubyLsp.enabledFeatures": {
-    "documentHighlights": true,
-    "documentSymbols": true,
-    "foldingRanges": true,
-    "selectionRanges": true,
-    "semanticHighlighting": true,
-    "formatting": true,
-    "diagnostics": true,
-    "codeActions": true
-  },
-  "rubyLsp.rubyVersionManager": "rbenv",
   "files.exclude": {
     "**/.git": true
-  }
+  },
 }

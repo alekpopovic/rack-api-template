@@ -32,17 +32,17 @@ jobs:
         run: docker tag rack-api-development:${{ github.sha }} popac/rack-api-development:${{ github.sha }}
       - name: Push image to container registry
         run: docker push popac/rack-api-development:${{ github.sha }}
-#      - name: Update image tag
-#        id: update-image-tag
-#        uses: mikefarah/yq@master
-#        with:
-#          cmd: yq eval '.image.tag = "${{ github.sha }}"' -i k8s/development/values.yaml
-#      - name: Update app version
-#        id: update-app-version
-#        uses: mikefarah/yq@master
-#        with:
-#          cmd: yq eval '.appVersion = "${{ github.sha }}"' -i k8s/development/Chart.yaml
-#      - name: Commit app version and docker tag
-#        uses: stefanzweifel/git-auto-commit-action@v4
-#        with:
-#          commit_message: Setup app version && docker tag to ${{ github.sha }}
+      - name: Update image tag
+        id: update-image-tag
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq eval '.image.tag = "${{ github.sha }}"' -i k8s/development/values.yaml
+      - name: Update app version
+        id: update-app-version
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq eval '.appVersion = "${{ github.sha }}"' -i k8s/development/Chart.yaml
+      - name: Commit app version and docker tag
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Setup app version && docker tag to ${{ github.sha }}

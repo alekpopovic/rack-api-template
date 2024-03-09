@@ -11,6 +11,9 @@ gem "puma"
 gem "dry-validation"
 gem "dotenv"
 gem "configem"
+gem "sidekiq"
+gem "sidekiq-scheduler"
+gem "railties"
 
 group :development do
   gem "foreman"

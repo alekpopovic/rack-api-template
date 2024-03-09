@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class HealthController < ApplicationController
-  include HealthAction
+  include HealthHandler
 
   def handler
     handle

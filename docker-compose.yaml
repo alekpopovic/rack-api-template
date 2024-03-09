@@ -1,8 +1,17 @@
 services:
+  redis:
+    image: "redis:7.2.3-alpine"
+    command: redis-server
+    volumes:
+      - redis:/data
+    ports:
+      - "6379:6379"
   api:
     build:
       context: .
       dockerfile: Dockerfile.local
+    depends_on:
+      - "redis"
     command:
       [
         "bundle",
@@ -12,7 +21,7 @@ services:
         "--pattern",
         "**/*.{rb}",
         "--dir",
-        "api,lib,spec",
+        "api,handlers,lib,spec",
         "--",
         "./bin/puma",
         "-C",
@@ -25,6 +34,34 @@ services:
       - gems:/gems
     env_file:
       - .env
-
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    depends_on:
+      - "redis"
+    command:
+      [
+        "bundle",
+        "exec",
+        "rerun",
+        "--background",
+        "--pattern",
+        "**/*.{rb}",
+        "--dir",
+        "api,handlers,lib,spec",
+        "--",
+        "./bin/sidekiq",
+        "-r",
+        "./config/sidekiq.rb",
+        "-C",
+        "config/sidekiq.yml"
+      ]
+    volumes:
+      - .:/usr/src/app
+      - gems:/gems
+    env_file:
+      - .env
 volumes:
+  redis:
   gems:

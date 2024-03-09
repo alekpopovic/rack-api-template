@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module CheckAppApiKey
+module CheckAppKey
   extend ActiveSupport::Concern
 
   included do

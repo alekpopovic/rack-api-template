@@ -1,17 +1,6 @@
 # frozen_string_literal: true
 
-module HealthAction
-  include AbstractController::Rendering
-
-  def handle
-    render(json: {
-      app: ENV["APP_NAME"],
-      env: ENV["APP_ENV"],
-    })
-  end
-
-  private
-
+module SignInValidator
   def validate(**args)
     args.assert_valid_keys(
       :email,

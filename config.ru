@@ -5,6 +5,7 @@ require_relative "config/initializer"
 router = ActionDispatch::Routing::RouteSet.new
 
 router.draw do
+  mount Sidekiq::Web => "/sidekiq"
   root to: "application#error_404"
   get "health", to: "health#handler"
   post "sign_in", to: "sign_in#handler"
