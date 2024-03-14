@@ -4,7 +4,7 @@ require "sidekiq"
 require_relative "initializers/application"
 
 Sidekiq.configure_server do |config|
-  config.concurrency = 5
+  config.concurrency = Application.config.max_threads_count
   config.redis = {
     url: Application.config.redis_url,
     db: 1,
