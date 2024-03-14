@@ -20,7 +20,7 @@ spec:
   project: default
   source:
     path: "k8s/development"
-    repoURL: git@github.com:AlekPopovic/RackApi.git
+    repoURL: git@github.com:alekpopovic/rack-api.git
     targetRevision: development
   syncPolicy:
     automated: {}

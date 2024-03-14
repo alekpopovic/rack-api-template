@@ -21,7 +21,7 @@ services:
         "--pattern",
         "**/*.{rb}",
         "--dir",
-        "api,handlers,lib,spec",
+        "api,handlers,jobs,lib,spec,tasks,validators",
         "--",
         "./bin/puma",
         "-C",
@@ -49,13 +49,13 @@ services:
         "--pattern",
         "**/*.{rb}",
         "--dir",
-        "api,handlers,lib,spec",
+        "api,handlers,jobs,lib,spec,tasks,validators",
         "--",
         "./bin/sidekiq",
         "-r",
         "./config/sidekiq.rb",
         "-C",
-        "config/sidekiq.yml"
+        "config/sidekiq.yml",
       ]
     volumes:
       - .:/usr/src/app
