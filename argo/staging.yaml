@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: rack-api-production
+  name: rack-api-staging
   namespace: argocd
   annotations:
     notifications.argoproj.io/subscribe.on-sync-succeeded.slack: argocd
@@ -12,12 +12,12 @@ metadata:
     notifications.argoproj.io/subscribe.on-health-degraded.slack: argocd
 spec:
   destination:
-    namespace: production
+    namespace: staging
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: "k8s/production"
+    path: "helm/staging"
     repoURL: git@github.com:alekpopovic/rack-api.git
-    targetRevision: production
+    targetRevision: staging
   syncPolicy:
     automated: {}

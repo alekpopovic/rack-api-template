@@ -19,7 +19,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: "k8s/development"
+    path: "helm/development"
     repoURL: git@github.com:alekpopovic/rack-api.git
     targetRevision: development
   syncPolicy:

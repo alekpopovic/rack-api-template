@@ -36,12 +36,12 @@ jobs:
         id: update-image-tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq eval '.image.tag = "${{ github.sha }}"' -i k8s/staging/values.yaml
+          cmd: yq eval '.image.tag = "${{ github.sha }}"' -i helm/staging/values.yaml
       - name: Update app version
         id: update-app-version
         uses: mikefarah/yq@master
         with:
-          cmd: yq eval '.appVersion = "${{ github.sha }}"' -i k8s/staging/Chart.yaml
+          cmd: yq eval '.appVersion = "${{ github.sha }}"' -i helm/staging/Chart.yaml
       - name: Commit app version and docker tag
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
