@@ -12,6 +12,7 @@ gem "dry-validation"
 gem "dotenv"
 gem "configem"
 gem "sidekiq"
+gem "concurrent-ruby"
 
 group :development do
   gem "foreman"

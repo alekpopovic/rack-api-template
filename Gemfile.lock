@@ -194,6 +194,7 @@ PLATFORMS
 
 DEPENDENCIES
   actionpack
+  concurrent-ruby
   configem
   debug
   dotenv

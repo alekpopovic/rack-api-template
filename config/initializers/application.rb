@@ -15,5 +15,4 @@ Application.configure do |config|
   config.pidfile = ENV.fetch("PIDFILE")
   config.web_concurrency = ENV.fetch("WEB_CONCURRENCY")
   config.redis_url = ENV.fetch("REDIS_URL")
-  config.rack_session_secure_key = ENV.fetch("RACK_SESSION_SECURE_KEY")
 end
