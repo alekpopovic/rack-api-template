@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "sidekiq"
-require "sidekiq-scheduler"
 require_relative "initializers/application"
 
 Sidekiq.configure_server do |config|
