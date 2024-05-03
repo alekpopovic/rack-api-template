@@ -8,32 +8,43 @@ pipeline {
     }
     agent any
     stages {
-        stage('Cloning our Git') {
-            steps {
-                git branch: $branch,
-                    url: $repo
-            }
-        }
-        stage('Docker build') {
+        stage('Print variables') {
             steps {
                 script {
-                    sh "docker build -t ${$image}:${$tag} ."
+                    sh "branch $branch"
+                    sh "repo $repo"
+                    sh "tag $tag"
+                    sh "registry $registry"
+                    sh "image $image"
                 }
             }
         }
-        stage('Docker tag') {
-            steps {
-                script {
-                    sh "docker tag ${$image}:${$tag} ${$registry}/${$image}:${$tag}"
-                }
-            }
-        }
-        stage('Docker rmi') {
-            steps {
-                sh "docker rmi ${$image}:${$tag}"
-                sh "docker rmi ${$registry}/${$image}:${$tag}"
-            }
-        }
+        //stage('Cloning our Git') {
+        //    steps {
+        //        git branch: $branch,
+        //            url: $repo
+        //    }
+        //}
+        //stage('Docker build') {
+        //    steps {
+        //        script {
+        //            sh "docker build -t ${$image}:${$tag} ."
+        //        }
+        //    }
+        //}
+        //stage('Docker tag') {
+        //    steps {
+        //        script {
+        //            sh "docker tag ${$image}:${$tag} ${$registry}/${$image}:${$tag}"
+        //        }
+        //    }
+        //}
+        //stage('Docker rmi') {
+        //    steps {
+        //        sh "docker rmi ${$image}:${$tag}"
+        //        sh "docker rmi ${$registry}/${$image}:${$tag}"
+        //    }
+        //}
     }
 }
 
