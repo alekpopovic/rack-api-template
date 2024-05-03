@@ -1,21 +1,21 @@
 pipeline {
-    //environment {
-    //    branch = 'main'
-    //    repo = 'git@github.com:alekpopovic/rack-api.git'
-    //    tag = ['git', 'rev-parse', 'HEAD'].execute().text
-    //    registry = 'popac'
-    //    image = 'rack-api'
-    //}
+    environment {
+        branch = 'main'
+        repo = 'git@github.com:alekpopovic/rack-api.git'
+        tag = ['git', 'rev-parse', 'HEAD'].execute().text
+        registry = 'popac'
+        image = 'rack-api'
+    }
     agent any
     stages {
         stage('Print variables') {
             steps {
                 script {
-                    sh "branch"
-                    sh "repo"
-                    sh "tag"
-                    sh "registry"
-                    sh "image"
+                    sh "echo $branch"
+                    sh "echo $repo"
+                    sh "echo $tag"
+                    sh "echo $registry"
+                    sh "echo $image"
                 }
             }
         }
