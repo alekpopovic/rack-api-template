@@ -15,19 +15,20 @@ pipeline {
         stage('Building our image') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    //dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    sh "docker build -t rails-api ."
                 }
             }
         }
-        stage('Deploy our image') {
-            steps {
-                script {
-                    docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
+        //stage('Deploy our image') {
+        //    steps {
+        //        script {
+        //            docker.withRegistry('', registryCredential) {
+        //                dockerImage.push()
+        //            }
+        //        }
+        //    }
+        //}
         stage('Cleaning up') {
             steps {
                 sh "docker rmi $registry:$BUILD_NUMBER"
