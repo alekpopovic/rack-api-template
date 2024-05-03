@@ -12,5 +12,7 @@
 docker-compose.yml
 Dockerfile
 Dockerfile.local
+Jenkinsfile
+Makefile
 Procfile.dev
 README.md
