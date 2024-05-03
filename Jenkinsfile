@@ -8,7 +8,8 @@ pipeline {
     stages {
         stage('Cloning our Git') {
             steps {
-                git 'git@github.com:alekpopovic/rack-api.git'
+                git branch: 'main',
+                    url: 'git@github.com:alekpopovic/rack-api.git'
             }
         }
         stage('Building our image') {
