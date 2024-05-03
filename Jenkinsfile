@@ -1,9 +1,9 @@
 pipeline {
-    environment {
-        registry = 'popac/rack-api'
-        registryCredential = 'dockerhub'
-        dockerImage = ''
-    }
+    //environment {
+    //    registry = 'popac/rack-api'
+    //    registryCredential = 'dockerhub'
+    //    dockerImage = ''
+    //}
     agent any
     stages {
         stage('Cloning our Git') {
@@ -12,27 +12,29 @@ pipeline {
                     url: 'git@github.com:alekpopovic/rack-api.git'
             }
         }
-        stage('Building our image') {
+        stage('Docker image') {
             steps {
                 script {
-                    //dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                    sh "docker build -t rails-api ."
+                    sh "docker build -t rails-api:${commitSha()} ."
                 }
             }
         }
-        //stage('Deploy our image') {
-        //    steps {
-        //        script {
-        //            docker.withRegistry('', registryCredential) {
-        //                dockerImage.push()
-        //            }
-        //        }
-        //    }
-        //}
-        stage('Cleaning up') {
+        stage('Docker tag') {
             steps {
-                sh "docker rmi $registry:$BUILD_NUMBER"
+                script {
+                    sh "docker tag rack-api:${commitSha()} popac/rack-api:${commitSha()}"
+                }
+            }
+        }
+        stage('Docker rmi') {
+            steps {
+                sh "docker rmi rack-api:${commitSha()}"
+                sh "docker rmi popac/rack-api:${commitSha()}"
             }
         }
     }
+}
+
+String commitSha() {
+    return sh(returnStdout: true, script: 'git rev-parse HEAD')
 }
