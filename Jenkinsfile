@@ -12,10 +12,10 @@ pipeline {
                     url: 'git@github.com:alekpopovic/rack-api.git'
             }
         }
-        stage('Docker image') {
+        stage('Docker build') {
             steps {
                 script {
-                    sh "docker build -t rails-api:${commitSha()} ."
+                    sh "docker build -t rack-api:${commitSha()} ."
                 }
             }
         }
@@ -35,6 +35,8 @@ pipeline {
     }
 }
 
-String commitSha() {
-    return sh(returnStdout: true, script: 'git rev-parse HEAD')
-}
+//String commitSha() {
+//    return sh(returnStdout: true, script: 'git rev-parse HEAD')
+//}
+
+def commitSha = 'git rev-parse HEAD'.execute()
