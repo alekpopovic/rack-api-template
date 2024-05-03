@@ -1,42 +1,39 @@
 pipeline {
-    //environment {
-    //    registry = 'popac/rack-api'
-    //    registryCredential = 'dockerhub'
-    //    dockerImage = ''
-    //}
+    environment {
+        branch = 'main'
+        repo = 'git@github.com:alekpopovic/rack-api.git'
+        tag = ['git', 'rev-parse', 'HEAD'].execute().text
+        registry = 'popac'
+        image = 'rack-api'
+    }
     agent any
     stages {
         stage('Cloning our Git') {
             steps {
-                git branch: 'main',
-                    url: 'git@github.com:alekpopovic/rack-api.git'
+                git branch: $branch,
+                    url: $repo
             }
         }
         stage('Docker build') {
             steps {
                 script {
-                    sh "docker build -t rack-api:${commitSha()} ."
+                    sh "docker build -t ${$image}:${$tag} ."
                 }
             }
         }
         stage('Docker tag') {
             steps {
                 script {
-                    sh "docker tag rack-api:${commitSha()} popac/rack-api:${commitSha()}"
+                    sh "docker tag ${$image}:${$tag} ${$registry}/${$image}:${$tag}"
                 }
             }
         }
         stage('Docker rmi') {
             steps {
-                sh "docker rmi rack-api:${commitSha()}"
-                sh "docker rmi popac/rack-api:${commitSha()}"
+                sh "docker rmi ${$image}:${$tag}"
+                sh "docker rmi ${$registry}/${$image}:${$tag}"
             }
         }
     }
 }
 
-//String commitSha() {
-//    return sh(returnStdout: true, script: 'git rev-parse HEAD')
-//}
-
-def commitSha = 'git rev-parse HEAD'.execute()
