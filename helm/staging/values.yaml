@@ -6,5 +6,5 @@ image:
   restartPolicy: Always
   containerPort: 3000
 replicaCount: 2
-clusterIssuerName: codepop-services
+clusterIssuerName: codepop
 ingressClassName: nginx
