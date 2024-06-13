@@ -25,9 +25,9 @@ app = Rack::Builder.new do
   end
   use(
     Rackup::Handler::Puma.run(
-      router, 
-      Port: Application.config.port
-    )
+      router,
+      Port: Application.config.port,
+    ),
   )
 end
 
