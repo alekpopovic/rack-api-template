@@ -1,6 +1,5 @@
 **/.github
 **/.vscode
-**/k8s
 **/spec
 .dockerignore
 .editorconfig
@@ -12,7 +11,6 @@
 docker-compose.yml
 Dockerfile
 Dockerfile.local
-Jenkinsfile
 Makefile
 Procfile.dev
 README.md

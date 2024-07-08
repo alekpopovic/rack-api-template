@@ -7,9 +7,9 @@ ENV RACK_ENV="production" \
   BUNDLE_DEPLOYMENT="1" \
   BUNDLE_PATH="/usr/local/bundle" \
   BUNDLE_WITHOUT="development" \
-  MAX_THREADS=5 \
-  MIN_THREADS=5 \
-  LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+  MAX_THREADS="5" \
+  MIN_THREADS="5" \
+  PORT="3000"
 
 FROM base as build
 

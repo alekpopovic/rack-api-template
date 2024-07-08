@@ -13,7 +13,7 @@ loader = Zeitwerk::Loader.new
 loader.push_dir("config/initializers")
 loader.push_dir("models")
 loader.push_dir("lib")
-loader.push_dir("jobs")
+#loader.push_dir("jobs")
 loader.push_dir("validators")
 loader.push_dir("handlers")
 loader.push_dir("api/concerns")

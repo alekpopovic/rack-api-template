@@ -1,0 +1,26 @@
+name: Build
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag"
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build image
+        run: docker build -t rack-api:${{ github.event.inputs.tag }} .
+      - name: Tag image
+        run: docker tag rack-api:${{ github.event.inputs.tag }} popac/rack-api:${{ github.event.inputs.tag }}
+      - name: Push image to container registry
+        run: docker push popac/rack-api:${{ github.event.inputs.tag }}

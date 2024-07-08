@@ -26,3 +26,13 @@ test:
 .PHONY: lint
 lint:
 	rubocop
+
+## build: docker build
+.PHONY: build
+build:
+	docker build -t rack-api:0.0.1 .
+
+## api: start api
+.PHONY: api
+api:
+	docker run --rm -it --network host --env-file .env -p 3000:3000/tcp --name rack-api rack-api:0.0.1 bundle exec puma

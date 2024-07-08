@@ -1,21 +1,19 @@
 # frozen_string_literal: true
 
+require "concurrent-ruby"
+
 require_relative "initializers/application"
 
 threads Application.config.min_threads_count, Application.config.max_threads_count
 
 worker_timeout 3600 if Application.config.environment == "development"
 
-port Application.config.port { 3000 }
+port Application.config.port
 
-environment Application.config.environment { "development" }
+environment Application.config.environment
 
-pidfile Application.config.pidfile { "tmp/pids/server.pid" }
+pidfile "tmp/pids/server.pid"
 
-if Application.config.environment == "production"
-  require "concurrent-ruby"
-  worker_count = Integer(Application.config.web_concurrency { Concurrent.physical_processor_count })
-  workers worker_count if worker_count > 1
-end
+workers Concurrent.physical_processor_count
 
 preload_app!

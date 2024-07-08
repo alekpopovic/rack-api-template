@@ -1,6 +1,0 @@
-apiVersion: v2
-name: rack-api-production
-description: A Helm chart for rack-api-production
-type: application
-version: 0.0.1
-appVersion: ""

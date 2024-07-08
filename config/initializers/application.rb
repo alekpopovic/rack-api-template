@@ -12,7 +12,5 @@ Application.configure do |config|
   config.port = ENV.fetch("PORT")
   config.max_threads_count = ENV.fetch("MAX_THREADS")
   config.min_threads_count = ENV.fetch("MIN_THREADS")
-  config.pidfile = ENV.fetch("PIDFILE")
-  config.web_concurrency = ENV.fetch("WEB_CONCURRENCY")
-  config.redis_url = ENV.fetch("REDIS_URL")
+  #config.redis_url = ENV.fetch("REDIS_URL")
 end
