@@ -5,8 +5,8 @@ module HealthHandler
 
   def handle
     render(json: {
-      app: ENV["APP_NAME"],
-      env: ENV["APP_ENV"],
+      app: 'rack-api',
+      env: ENV["RACK_ENV"],
     })
   end
 end
