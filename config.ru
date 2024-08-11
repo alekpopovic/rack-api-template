@@ -13,6 +13,7 @@ require "securerandom"
 require "rack/session"
 require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
+#require "rails"
 
 loader = Zeitwerk::Loader.new
 loader.push_dir("models")
@@ -24,44 +25,34 @@ loader.push_dir("api/concerns")
 loader.push_dir("api/controllers")
 loader.setup
 
-use Rack::Session::Cookie, secret: SecureRandom.hex(32), same_site: true, max_age: 86400
-
-Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-  [username, password] == [ENV.fetch('SIDEKIQ_WEB_USERNAME'), ENV.fetch('SIDEKIQ_WEB_PASSWORD')]
-end
-
-map('/sidekiq') { run Sidekiq::Web }
-
 router = ActionDispatch::Routing::RouteSet.new
 
 router.draw do
   root to: "application#error_404"
-
-  #get "/sidekiq", to: Sidekiq::Web
+  get "sidekiq", to: Sidekiq::Web
   get "health", to: "health#handler"
   post "sign_in", to: "sign_in#handler"
   match "*unmatched", to: "application#error_404", via: :all
 end
 
-app = Rack::Builder.new do
-  use(Rack::Cors) do
-    allow do
-      origins("*")
-      resource(
-        "*",
-        credentials: true,
-        headers: :any,
-        methods: %(get post put patch delete options head),
-      )
-    end
-  end
+use Rack::Session::Cookie, secret: SecureRandom.hex(32), same_site: true, max_age: 86400
 
-  #use(
-  #  Rackup::Handler::Puma.run(
-  #    router,
-  #    Port: ENV.fetch("PORT"),
-  #  ),
-  #)
+map('/sidekiq') { run Sidekiq::Web }
+
+use(Rackup::Handler::Puma.run(router, Port: ENV.fetch("PORT"), Verbose: true))
+
+use(Rack::Cors) do
+  allow do
+    origins("*")
+    resource(
+      "*",
+      credentials: true,
+      headers: :any,
+      methods: %(get post put patch delete options head),
+    )
+  end
 end
 
-run app
+Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+  [username, password] == [ENV.fetch('SIDEKIQ_WEB_USERNAME'), ENV.fetch('SIDEKIQ_WEB_PASSWORD')]
+end
