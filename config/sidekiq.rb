@@ -10,17 +10,17 @@ loader.push_dir("jobs")
 loader.setup
 
 Sidekiq.configure_server do |config|
-  config.concurrency = 5
+  config.concurrency = ENV.fetch("MAX_THREADS") { 5 }
   config.redis = {
-    url: ENV["REDIS_URL"],
-    db: 1,
+    url: ENV.fetch("REDIS_URL") { "redis://localhost:6379" },
+    db: ENV.fetch("REDIS_DB") { 1 },
   }
-  config.logger.formatter = Sidekiq::Logger::Formatters::JSON.new if ENV["RACK_ENV"] == "production"
+  config.logger.formatter = Sidekiq::Logger::Formatters::JSON.new if ENV.fetch("RACK_ENV") == "production"
 end
 
 Sidekiq.configure_client do |config|
   config.redis = {
-    url: ENV["REDIS_URL"],
-    db: 1,
+    url: ENV.fetch("REDIS_URL") { "redis://localhost:6379" },
+    db: ENV.fetch("REDIS_DB") { 1 },
   }
 end
