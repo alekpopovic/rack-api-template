@@ -13,7 +13,6 @@ require "securerandom"
 require "rack/session"
 require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
-#require "rails"
 
 loader = Zeitwerk::Loader.new
 loader.push_dir("models")
