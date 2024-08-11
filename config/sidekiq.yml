@@ -1,3 +1,9 @@
 ---
 :queues:
   - default
+
+:scheduler:
+  :schedule:
+    hello_world:
+      cron: '0 * * * * *'
+      class: HelloJob

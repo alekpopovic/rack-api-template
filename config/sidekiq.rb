@@ -1,20 +1,26 @@
 # frozen_string_literal: true
 
-#require "sidekiq"
-#require_relative "initializers/application"
+require "dotenv/load" if ENV["RACK_ENV"] == "development"
+require "sidekiq"
+require "sidekiq-scheduler"
+require "zeitwerk"
 
-#Sidekiq.configure_server do |config|
-#  config.concurrency = Application.config.max_threads_count
-#  config.redis = {
-#    url: Application.config.redis_url,
-#    db: 1,
-#  }
-#  config.logger.formatter = Sidekiq::Logger::Formatters::JSON.new if Application.config.environment == "production"
-#end
+loader = Zeitwerk::Loader.new
+loader.push_dir("jobs")
+loader.setup
 
-#Sidekiq.configure_client do |config|
-#  config.redis = {
-#    url: Application.config.redis_url,
-#    db: 1,
-#  }
-#end
+Sidekiq.configure_server do |config|
+  config.concurrency = 5
+  config.redis = {
+    url: ENV["REDIS_URL"],
+    db: 1,
+  }
+  config.logger.formatter = Sidekiq::Logger::Formatters::JSON.new if ENV["RACK_ENV"] == "production"
+end
+
+Sidekiq.configure_client do |config|
+  config.redis = {
+    url: ENV["REDIS_URL"],
+    db: 1,
+  }
+end

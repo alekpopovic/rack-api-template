@@ -1,7 +1,6 @@
 **/.github
 **/.vscode
 **/spec
-.dockerignore
 .editorconfig
 .env.example
 .gitignore

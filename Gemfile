@@ -2,6 +2,8 @@
 
 source "https://rubygems.org"
 
+ruby "3.3.4"
+
 gem "zeitwerk"
 gem "rake"
 gem "rackup"
@@ -9,15 +11,15 @@ gem "rack-cors"
 gem "actionpack"
 gem "puma"
 gem "dry-validation"
-gem "dotenv"
 gem "configem"
 gem "sidekiq"
-gem "concurrent-ruby"
+gem "sidekiq-scheduler"
 
 group :development do
   gem "foreman"
   gem "rb-fsevent"
   gem "rerun"
+  gem "dotenv"
 end
 
 group :development, :test do
@@ -30,4 +32,8 @@ group :test do
   gem "factory_bot"
   gem "rspec"
   gem "rack-test"
+end
+
+group :production do
+  gem "concurrent-ruby"
 end

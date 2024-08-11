@@ -1,5 +1,4 @@
-ARG RUBY_VERSION=3.3.2
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+FROM ruby:3.3.4 as base
 
 WORKDIR /rack
 

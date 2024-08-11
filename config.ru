@@ -1,6 +1,25 @@
 # frozen_string_literal: true
 
-require_relative "config/initializer"
+require "dotenv/load" if ENV["RACK_ENV"] == "development"
+require "zeitwerk"
+require "rack"
+require "rackup"
+require "rack/cors"
+require "rack/session"
+require "rack/handler/puma"
+require "action_controller"
+require "action_dispatch"
+require "dry-validation"
+
+loader = Zeitwerk::Loader.new
+loader.push_dir("models")
+loader.push_dir("lib")
+loader.push_dir("jobs")
+loader.push_dir("validators")
+loader.push_dir("handlers")
+loader.push_dir("api/concerns")
+loader.push_dir("api/controllers")
+loader.setup
 
 router = ActionDispatch::Routing::RouteSet.new
 
@@ -26,7 +45,7 @@ app = Rack::Builder.new do
   use(
     Rackup::Handler::Puma.run(
       router,
-      Port: Application.config.port,
+      Port: ENV.fetch("PORT"),
     ),
   )
 end

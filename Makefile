@@ -36,3 +36,8 @@ build:
 .PHONY: api
 api:
 	docker run --rm -it --network host --env-file .env -p 3000:3000/tcp --name rack-api rack-api:0.0.1 bundle exec puma
+
+## jobs: start jobs
+.PHONY: jobs
+jobs:
+	docker run --rm -it --network host --env-file .env --name rack-api-sidekik rack-api:0.0.1 bundle exec sidekiq -r ./config/sidekiq.rb -C config/sidekiq.yml

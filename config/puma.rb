@@ -1,19 +1,21 @@
 # frozen_string_literal: true
 
-require "concurrent-ruby"
+max_threads_count = ENV.fetch("MAX_THREADS") { 5 }
+min_threads_count = ENV.fetch("MIN_THREADS") { max_threads_count }
+threads min_threads_count, max_threads_count
 
-require_relative "initializers/application"
+if ENV["RACK_ENV"] == "production"
+  require "concurrent-ruby"
+  worker_count = Integer(ENV.fetch("WEB_CONCURRENCY") { Concurrent.physical_processor_count })
+  workers worker_count if worker_count > 1
+end
 
-threads Application.config.min_threads_count, Application.config.max_threads_count
+worker_timeout 3600 if ENV["RACK_ENV"] == "development"
 
-worker_timeout 3600 if Application.config.environment == "development"
+port ENV.fetch("PORT") { 3000 }
 
-port Application.config.port
+environment ENV.fetch("RACK_ENV") { "development" }
 
-environment Application.config.environment
-
-pidfile "tmp/pids/server.pid"
-
-workers Concurrent.physical_processor_count
+pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 
 preload_app!
