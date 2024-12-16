@@ -11,7 +11,6 @@ gem "rack-cors"
 gem "actionpack"
 gem "puma"
 gem "dry-validation"
-gem "configem"
 gem "sidekiq"
 gem "sidekiq-scheduler"
 
