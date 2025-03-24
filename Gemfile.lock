@@ -84,6 +84,7 @@ GEM
       activesupport (>= 5.0.0)
     faker (3.4.2)
       i18n (>= 1.8.11, < 2)
+    ffi (1.17.0)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-arm64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
@@ -106,8 +107,12 @@ GEM
     loofah (2.23.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+    mini_portile2 (2.8.8)
     minitest (5.25.4)
     nio4r (2.7.3)
+    nokogiri (1.17.2)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.17.2-aarch64-linux)
       racc (~> 1.4)
     nokogiri (1.17.2-arm64-darwin)
@@ -239,7 +244,7 @@ DEPENDENCIES
   zeitwerk
 
 RUBY VERSION
-   ruby 3.3.6p108
+   ruby 3.4.2p28
 
 BUNDLED WITH
-   2.5.23
+   2.6.6
