@@ -1,4 +1,4 @@
-FROM ruby:3.3.6 as base
+FROM ruby:3.4.3-slim AS base
 
 WORKDIR /rack
 
@@ -10,7 +10,7 @@ ENV RACK_ENV="production" \
   MIN_THREADS="5" \
   PORT="3000"
 
-FROM base as build
+FROM base AS build
 
 RUN apt-get update -qq && \
   apt-get install --no-install-recommends -y \

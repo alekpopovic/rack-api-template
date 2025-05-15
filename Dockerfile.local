@@ -1,10 +1,10 @@
-FROM ruby:3.3.6
+FROM ruby:3.4.3
 
 COPY Gemfile* /usr/src/app/
 
 WORKDIR /usr/src/app
 
-ENV BUNDLE_PATH /gems
+ENV BUNDLE_PATH=/gems
 
 RUN bundle install
 

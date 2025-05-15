@@ -107,7 +107,7 @@ GEM
     loofah (2.23.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    mini_portile2 (2.8.8)
+    mini_portile2 (2.8.9)
     minitest (5.25.4)
     nio4r (2.7.3)
     nokogiri (1.17.2)
@@ -244,7 +244,7 @@ DEPENDENCIES
   zeitwerk
 
 RUBY VERSION
-   ruby 3.4.2p28
+   ruby 3.4.3p32
 
 BUNDLED WITH
-   2.6.6
+   2.6.8

@@ -20,11 +20,8 @@ loader.setup
 router = ActionDispatch::Routing::RouteSet.new
 router.draw do
   root to: "application#error_404"
-
   get "health", to: "health#handler"
-
   post "sign_in", to: "sign_in#handler"
-
   match "*unmatched", to: "application#error_404", via: :all
 end
 
