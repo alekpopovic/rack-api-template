@@ -17,3 +17,5 @@ docker run --rm -it --env-file .env -p 3000:3000/tcp --name rack-api rack-api:0.
 
 docker run --rm -it --env-file .env --name rack-api-sidekiq rack-api:0.0.1 config/sidekiq.rb -C config/sidekiq.yml
 ```
+
+https://endoflife.date/ruby
