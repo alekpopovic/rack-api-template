@@ -25,15 +25,19 @@ router.draw do
   match "*unmatched", to: "application#error_404", via: :all
 end
 
-use(Rack::Cors) do
-  allow do
-    origins("*")
-    resource(
-      "*",
-      credentials: true,
-      headers: :any,
-      methods: %(get post put patch delete options head),
-    )
+app = Rack::Builder.new do
+  use(Rack::Cors) do
+    allow do
+      origins("*")
+      resource(
+        "*",
+        credentials: true,
+        headers: :any,
+        methods: %(get post put patch delete options head),
+      )
+    end
   end
+  use(Rackup::Handler::Puma.run(router, Port: ENV.fetch("PORT", 3000), Verbose: true))
 end
-use(Rackup::Handler::Puma.run(router, Port: ENV.fetch("PORT", 3000), Verbose: true))
+
+run app
