@@ -3,9 +3,9 @@
 module ExampleHandler
   include AbstractController::Rendering
 
-  def handle()
+  def handle
     render(json: {
-      message: "Hello"
+      message: "Hello",
     })
   end
 end
