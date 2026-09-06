@@ -11,7 +11,7 @@ gem "rack-cors"
 gem "rack-session"
 gem "cgi"
 gem "actionpack"
-gem "puma", "~> 7.2", ">= 7.2.1"
+gem "puma", "~> 8.0"
 gem "dry-validation"
 gem "sidekiq"
 # Sidekiq 8.0.3 uses the positional timeout API removed in connection_pool 3.
