@@ -1,2 +1,2 @@
-api: bundle exec rerun --background --pattern **/*.{rb} --dir api,handlers,jobs,lib,spec,tasks,validators -- ./bin/puma -C config/puma.rb
-sidekiq: bundle exec rerun --background --pattern **/*.{rb} --dir api,handlers,jobs,lib,spec,tasks,validators -- ./bin/sidekiq -r ./config/sidekiq.rb -C config/sidekiq.yml
+api: bundle exec rerun --background --dir . --pattern '**/*.{rb,ru,yml,yaml}' --ignore '.git/**,tmp/**,log/**,spec/**' -- ./bin/puma -C config/puma.rb
+sidekiq: bundle exec rerun --background --dir . --pattern '**/*.{rb,ru,yml,yaml}' --ignore '.git/**,tmp/**,log/**,spec/**' -- ./bin/sidekiq -r ./config/sidekiq.rb -C config/sidekiq.yml

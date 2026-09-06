@@ -1,8 +1,27 @@
-#!/usr/bin/env bash
-set -euo pipefail
-IFS=$'\n\t'
-set -vx
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-bundle install
+require "fileutils"
+require "securerandom"
 
-# Do any other automated setup that you need to do here
+root = File.expand_path("..", __dir__)
+path = File.join(root, ".env")
+FileUtils.cp(File.join(root, ".env.example"), path) unless File.exist?(path)
+contents = File.read(path)
+%w[CLIENT_API_KEY SIDEKIQ_WEB_SESSION_SECRET].each do |name|
+  pattern = /^#{name}=(.*)$/
+  current = contents.match(pattern)&.captures&.first.to_s.strip
+  next unless ["", '""', "''"].include?(current)
+
+  entry = "#{name}=#{SecureRandom.hex(64)}"
+  if contents.match?(pattern)
+    contents.sub!(pattern, entry)
+  else
+    contents << "\n" unless contents.end_with?("\n")
+    contents << "#{entry}\n"
+  end
+end
+File.write(path, contents)
+File.chmod(0o600, path)
+puts "Local environment configured. Existing credentials were preserved."
+system("bundle", "install", chdir: root, exception: true) unless ARGV.include?("--env-only")

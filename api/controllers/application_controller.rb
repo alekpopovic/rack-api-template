@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
-  # include CheckAppApiKey
+  include CheckApiKey
   include HandleHttpErrors
-  include UnderscoreParams
 
-  def error_404
-    raise not_found_error("Action #{params[:unmatched]} not found")
+  def not_found
+    render(json: { errors: [{ code: "NOT_FOUND_ERROR", message: "Route not found" }], request_id: request.request_id }, status: :not_found)
   end
 end

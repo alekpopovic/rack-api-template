@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+desc "Check Ruby style"
 task :lint do
-  bundle exec("rubocop")
+  sh "bundle", "exec", "rubocop"
 end

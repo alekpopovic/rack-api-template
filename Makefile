@@ -1,43 +1,37 @@
-.PHONY: help
+IMAGE ?= rack-api:local
+
+.PHONY: help setup dev console test lint check build api jobs smoke
 help:
-	@echo 'Usage:'
-	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
+	@echo "Targets: setup dev console test lint check build api jobs smoke"
 
-.PHONY: confirm
-confirm:
-	@echo -n 'Are you sure? [y/N] ' && read ans && [ $${ans:-N} = y ]
-
-.PHONY: setup
 setup:
 	./bin/setup
 
-.PHONY: dev
 dev:
 	./bin/dev
 
-.PHONY: console
 console:
-	./bin/console
+	bundle exec ./bin/console
 
-.PHONY: test
 test:
-	rspec
+	bundle exec rspec
 
-.PHONY: lint
 lint:
-	rubocop
+	bundle exec rubocop
 
-## build: docker build
-.PHONY: build
+check:
+	bundle exec ./bin/check
+	bundle exec rubocop
+	bundle exec rspec
+
 build:
-	docker build -t rack-api:0.0.1 .
+	docker build --build-arg RUBY_VERSION="$$(cat .ruby-version)" -t "$(IMAGE)" .
 
-## api: start api
-.PHONY: api
 api:
-	docker run --rm -it --network host --env-file .env -p 3000:3000/tcp --name rack-api rack-api:0.0.1 bundle exec puma
+	docker compose up -d api
 
-## jobs: start jobs
-.PHONY: jobs
 jobs:
-	docker run --rm -it --network host --env-file .env --name rack-api-sidekik rack-api:0.0.1 bundle exec sidekiq -r ./config/sidekiq.rb -C config/sidekiq.yml
+	docker compose up -d sidekiq
+
+smoke:
+	bundle exec ./bin/smoke-image "$(IMAGE)"

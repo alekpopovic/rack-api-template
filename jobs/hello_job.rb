@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "sidekiq-scheduler"
-
 class HelloJob
   include Sidekiq::Job
 
+  sidekiq_options retry: 3
+
   def perform
-    puts "Hello world"
+    logger.info(event: "hello_job", message: "Hello world")
   end
 end

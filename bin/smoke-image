@@ -1,0 +1,153 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "net/http"
+require "nokogiri"
+require "open3"
+require "securerandom"
+
+# Uses an isolated Docker network and disposable Redis, never the developer's DB.
+image = ARGV.fetch(0, "rack-api:local")
+prefix = "rack-api-smoke-#{SecureRandom.hex(4)}"
+api = "#{prefix}-api"
+worker = "#{prefix}-worker"
+redis = "#{prefix}-redis"
+containers = []
+
+def docker(*args)
+  output, error, status = Open3.capture3("docker", *args)
+  raise "docker #{args.first} failed: #{error}" unless status.success?
+
+  output.strip
+end
+
+def eventually(description, timeout: 60)
+  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
+  loop do
+    return if yield
+    raise "Timed out: #{description}" if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
+    sleep 0.25
+  end
+end
+
+begin
+  docker("network", "create", prefix)
+  docker("run", "--rm", "--network", "none", "--entrypoint", "ruby", image, "-e", <<~'CHECK')
+    abort "Image runs as root" if Process.uid.zero?
+    %w[.env .git .bundle spec].each { |path| abort "Unexpected image content: #{path}" if File.exist?(path) }
+    %w[rspec rubocop debug factory_bot faker].each do |name|
+      abort "Development/test gem in image: #{name}" unless Gem::Specification.find_all_by_name(name).empty?
+    end
+  CHECK
+  puts "Production image: non-root, no environment files, Git history, or test gems"
+
+  containers << redis
+  docker("run", "-d", "--name", redis, "--network", prefix, "redis:7.4-alpine",
+    "redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction")
+  eventually("Redis startup") do
+    output, _, status = Open3.capture3("docker", "exec", redis, "redis-cli", "ping")
+    status.success? && output.strip == "PONG"
+  end
+
+  api_key = SecureRandom.hex(32)
+  username = "smoke-user"
+  password = SecureRandom.hex(32)
+  env = {
+    "RACK_ENV" => "production", "REDIS_URL" => "redis://#{redis}:6379", "REDIS_DB" => "1",
+    "CLIENT_API_KEY" => api_key, "SIDEKIQ_WEB_ENABLED" => "true", "SIDEKIQ_WEB_USERNAME" => username,
+    "SIDEKIQ_WEB_PASSWORD" => password, "SIDEKIQ_WEB_SESSION_SECRET" => SecureRandom.hex(64),
+    "WEB_CONCURRENCY" => "2", "ENABLE_EXAMPLE_JOBS" => "true",
+  }
+  env_args = env.flat_map { |key, value| ["-e", "#{key}=#{value}"] }
+  containers << worker
+  docker("run", "-d", "--name", worker, "--network", prefix, "--read-only", "--tmpfs", "/tmp", "--stop-timeout", "35",
+    *env_args, image, "bundle", "exec", "sidekiq", "-r", "./config/sidekiq.rb", "-C", "config/sidekiq.yml")
+  containers << api
+  docker("run", "-d", "--name", api, "--network", prefix, "--read-only", "--tmpfs", "/tmp", "--stop-timeout", "35",
+    "-p", "127.0.0.1::3000", *env_args, image)
+  port = JSON.parse(docker("inspect", api)).first.fetch("NetworkSettings").fetch("Ports").fetch("3000/tcp").first.fetch("HostPort").to_i
+
+  request = lambda do |path, method: :get, dashboard: false, body: nil, cookie: nil, api_auth: false|
+    klass = {get: Net::HTTP::Get, post: Net::HTTP::Post}.fetch(method)
+    message = klass.new(path)
+    message.basic_auth(username, password) if dashboard
+    message["Api-Key"] = api_key if api_auth
+    # Simulate TLS termination at the trusted reverse proxy.
+    message["X-Forwarded-Proto"] = "https"
+    message["Cookie"] = cookie if cookie
+    if body
+      message["Content-Type"] = "application/json"
+      message.body = body
+    end
+    Net::HTTP.start("127.0.0.1", port, open_timeout: 2, read_timeout: 3) { |http| http.request(message) }
+  end
+  eventually("API startup") do
+    request.call("/health/ready").code == "200"
+  rescue SystemCallError, IOError, Timeout::Error
+    false
+  end
+  raise "API authentication missing" unless request.call("/examples").code == "401"
+  response = request.call("/examples/validate", method: :post, api_auth: true,
+    body: JSON.generate(email: "smoke@example.com", password: "never-log-this-password"))
+  raise "Validation failed" unless response.code == "200" && JSON.parse(response.body) == {"email" => "smoke@example.com", "valid" => true}
+  response = request.call("/examples/validate", method: :post, api_auth: true, body: '{"password":"never-log-this-password",')
+  raise "Malformed JSON was not rejected" unless response.code == "400"
+  raise "Password was logged" if docker("logs", api).include?("never-log-this-password")
+  puts "Production API: authentication, validation, malformed JSON, redacted logs"
+
+  raise "Dashboard authentication missing" unless request.call("/sidekiq/").code == "401"
+  %w[/sidekiq/ /sidekiq/busy /sidekiq/queues /sidekiq/retries /sidekiq/scheduled /sidekiq/recurring-jobs /sidekiq/stylesheets/style.css /sidekiq/javascripts/application.js].each do |path|
+    raise "Dashboard page failed: #{path}" unless request.call(path, dashboard: true).code == "200"
+  end
+  eventually("Recurring schedule") { request.call("/sidekiq/recurring-jobs", dashboard: true).body.include?("hello_world") }
+  response = request.call("/sidekiq/", dashboard: true)
+  token = Nokogiri::HTML(response.body).at_css('input[name="authenticity_token"]')&.[]("value")
+  raise "Missing CSRF token" unless token
+  cookies = response.get_fields("set-cookie") || []
+  raise "Missing secure session cookie" unless cookies.any? { |cookie| cookie.downcase.include?("secure") }
+  cookie = cookies.map { |value| value.split(";", 2).first }.join("; ")
+  message = Net::HTTP::Post.new("/sidekiq/change_locale")
+  message.basic_auth(username, password)
+  message["Cookie"] = cookie
+  message["X-Forwarded-Proto"] = "https"
+  message["Referer"] = "https://127.0.0.1:#{port}/sidekiq/"
+  message.set_form_data("locale" => "en", "authenticity_token" => token)
+  response = Net::HTTP.start("127.0.0.1", port) { |http| http.request(message) }
+  raise "Valid CSRF action failed" unless response.code == "302"
+  response = request.call("/sidekiq/change_locale", method: :post, dashboard: true, cookie: cookie)
+  raise "Missing CSRF token accepted" unless response.code == "403"
+  puts "Sidekiq Web: pages, recurring schedule, secure cookies, CSRF across Puma workers"
+
+  output = docker("exec", worker, "bundle", "exec", "ruby", "-r./config/boot", "-e",
+    'puts "SMOKE_JID=#{HelloJob.perform_in(1)}"')
+  jid = output.lines.find { |line| line.start_with?("SMOKE_JID=") }&.strip&.split("=", 2)&.last
+  raise "Job was not enqueued" unless jid
+  eventually("Delayed job execution") do
+    docker("logs", worker).lines.any? do |line|
+      event = JSON.parse(line)
+      event["jid"] == jid && event["message"] == "done"
+    rescue JSON::ParserError
+      false
+    end
+  end
+  puts "Sidekiq: real delayed job executed successfully"
+
+  docker("stop", "--time", "35", worker)
+  raise "Worker did not stop cleanly" unless JSON.parse(docker("inspect", worker)).first.fetch("State").fetch("ExitCode").zero?
+  docker("stop", redis)
+  raise "Readiness did not fail with Redis down" unless request.call("/health/ready").code == "503"
+  raise "Liveness depends on Redis" unless request.call("/health/live").code == "200"
+  puts "Shutdown and health checks: passed"
+rescue StandardError => error
+  $stderr.puts(error.message)
+  containers.each do |container|
+    output, = Open3.capture3("docker", "logs", "--tail", "25", container)
+    $stderr.puts("#{container}:\n#{output}") unless output.empty?
+  end
+  exit 1
+ensure
+  containers.reverse_each { |container| Open3.capture3("docker", "rm", "-f", "-v", container) }
+  Open3.capture3("docker", "network", "rm", prefix)
+end

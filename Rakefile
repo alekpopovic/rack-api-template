@@ -1,5 +1,4 @@
 # frozen_string_literal: true
 
-Dir.glob(
-  "#{File.expand_path(__dir__)}/tasks/**/*.rake",
-).each { |f| import f }
+Dir.glob(File.join(__dir__, "tasks", "*.rake")).sort.each { |file| import(file) }
+task default: [:check, :lint, :test]

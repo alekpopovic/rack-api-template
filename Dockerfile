@@ -1,40 +1,29 @@
-FROM ruby:3.4.3 AS base
+ARG RUBY_VERSION=4.0.5
+FROM ruby:${RUBY_VERSION}-slim AS base
 
 WORKDIR /rack
-
 ENV RACK_ENV="production" \
-  BUNDLE_DEPLOYMENT="1" \
-  BUNDLE_PATH="/usr/local/bundle" \
-  BUNDLE_WITHOUT="development" \
-  MAX_THREADS="5" \
-  MIN_THREADS="5" \
-  PORT="3000"
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development:test" \
+    PORT="3000"
 
 FROM base AS build
-
 RUN apt-get update -qq && \
-  apt-get install --no-install-recommends -y \
-  build-essential \
-  curl \
-  git \
-  libpq-dev \
-  libvips \
-  pkg-config \
-  python-is-python3 \
-  libjemalloc2
-
-COPY Gemfile Gemfile.lock ./
-
+    apt-get install --no-install-recommends -y build-essential && \
+    rm -rf /var/lib/apt/lists/*
+COPY Gemfile Gemfile.lock .ruby-version ./
 RUN bundle install && \
-  rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
-
+    rm -rf /usr/local/bundle/ruby/*/cache /usr/local/bundle/ruby/*/bundler/gems/*/.git
 COPY . .
 
-FROM base
-
-RUN apt-get update -qq && \
-  apt-get install --no-install-recommends -y curl libvips postgresql-client && \
-  rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
+FROM base AS production
+RUN groupadd --gid 10001 app && \
+    useradd --uid 10001 --gid app --home-dir /rack --no-create-home app && \
+    ruby -rrubygems/uninstaller -e 'Gem::Uninstaller.new("debug", all: true, ignore: true, executables: true, install_dir: Gem.default_dir).uninstall'
 COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rack /rack
+COPY --from=build --chown=app:app /rack /rack
+USER app:app
+EXPOSE 3000
+STOPSIGNAL SIGTERM
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

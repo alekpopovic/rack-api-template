@@ -1,31 +1,31 @@
-name: Test, lint && build
+name: Test, lint and build
 on:
   push:
-    branches: ["production"]
+    branches: [development, staging, production]
   pull_request:
-    branches: [
-      "development",
-      "staging",
-      "production"
-    ]
 permissions:
   contents: read
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby-version: ["3.4.3"]
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
         with:
-          ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
-      - name: Run lint
+      - name: Load application classes
+        run: bundle exec ./bin/check
+      - name: Lint
         run: bundle exec rubocop
-      - name: Run tests
+      - name: Unit and request tests
         run: bundle exec rspec
-      - name: Run test build
-        run: docker build -t test-build:${{ github.sha }} .
+      - name: Audit dependencies
+        run: bundle exec bundle-audit check --update
+      - name: Build production image
+        run: docker build --pull --build-arg RUBY_VERSION="$(cat .ruby-version)" -t rack-api:test .
+      - name: Production API, Redis and Sidekiq integration
+        run: bundle exec ./bin/smoke-image rack-api:test

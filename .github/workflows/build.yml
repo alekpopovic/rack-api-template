@@ -1,26 +1,46 @@
-name: Build
+name: Publish image
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag"
+        description: Release tag
         required: true
         type: string
 permissions:
-  contents: write
+  contents: read
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
     steps:
-      - uses: actions/checkout@v3
-      #- name: Log in to Docker Hub
-      #  uses: docker/login-action@v3
-      #  with:
-      #    username: ${{ secrets.DOCKER_USERNAME }}
-      #    password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          bundler-cache: true
+      - name: Validate release tag
+        shell: bash
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ ]]; then
+            echo "Invalid Docker image tag" >&2
+            exit 1
+          fi
+      - name: Validate application
+        run: bundle exec rake
+      - name: Audit dependencies
+        run: bundle exec bundle-audit check --update
       - name: Build image
-        run: docker build -t rack-api:${{ github.event.inputs.tag }} .
-      - name: Tag image
-        run: docker tag rack-api:${{ github.event.inputs.tag }} popac/rack-api:${{ github.event.inputs.tag }}
-      - name: Push image to container registry
-        run: docker push popac/rack-api:${{ github.event.inputs.tag }}
+        run: docker build --pull --build-arg RUBY_VERSION="$(cat .ruby-version)" -t "popac/rack-api:$RELEASE_TAG" .
+      - name: Verify production image
+        run: bundle exec ./bin/smoke-image "popac/rack-api:$RELEASE_TAG"
+      - name: Log in to Docker Hub
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push image
+        run: docker push "popac/rack-api:$RELEASE_TAG"

@@ -13,4 +13,6 @@
 !/tmp/pids/
 !/tmp/pids/.keep
 .env
+.env.*
+!.env.example
 .rspec_status

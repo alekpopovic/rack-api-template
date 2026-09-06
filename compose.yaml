@@ -1,0 +1,47 @@
+x-app: &app
+  build:
+    context: .
+    dockerfile: Dockerfile.local
+  depends_on:
+    redis:
+      condition: service_healthy
+  volumes:
+    - .:/usr/src/app
+    - gems:/gems
+  env_file: .env
+  environment:
+    REDIS_URL: redis://redis:6379
+  stop_grace_period: 35s
+
+services:
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+    stop_grace_period: 35s
+  api:
+    <<: *app
+    command: ["bundle", "exec", "rerun", "--background", "--dir", ".", "--pattern", "**/*.{rb,ru,yml,yaml}", "--ignore", ".git/**,tmp/**,log/**,spec/**", "--", "./bin/puma", "-C", "config/puma.rb"]
+    ports:
+      - "127.0.0.1:${PORT:-3000}:${PORT:-3000}"
+    healthcheck:
+      test: ["CMD", "ruby", "-rnet/http", "-e", "exit(Net::HTTP.get_response(URI('http://127.0.0.1:' + ENV.fetch('PORT', '3000') + '/health/live')).code == '200' ? 0 : 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
+  sidekiq:
+    <<: *app
+    command: ["bundle", "exec", "rerun", "--background", "--dir", ".", "--pattern", "**/*.{rb,ru,yml,yaml}", "--ignore", ".git/**,tmp/**,log/**,spec/**", "--", "./bin/sidekiq", "-r", "./config/sidekiq.rb", "-C", "config/sidekiq.yml"]
+
+volumes:
+  redis:
+  gems:
